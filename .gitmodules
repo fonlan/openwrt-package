@@ -1,0 +1,3 @@
+[submodule "luci-theme-opentomato"]
+	path = luci-theme-opentomato
+	url = https://github.com/Leo-Jo-My/luci-theme-opentomato
