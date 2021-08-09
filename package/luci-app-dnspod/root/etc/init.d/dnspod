@@ -68,9 +68,3 @@ stop()
 		cat /dev/null > /var/log/ddnspod.log && echo "$(date "+%Y-%m-%d %H:%M:%S") >>>>>>>>停止运行:DNS记录以保存<<<<<<<<" >> ${logfile}
 	fi
 }
-
-restart()
-{
-	stop()
-	start()
-}
