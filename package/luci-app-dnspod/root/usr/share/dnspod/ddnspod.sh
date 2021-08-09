@@ -26,12 +26,6 @@ if [ $logrow -ge 100 ];then
     cat /dev/null > ${logfile}
     echo "$(date "+%Y-%m-%d %H:%M:%S") Log条数超限，清空处理！" >> ${logfile}
 fi
-
-logrow1=$(grep -c "" ${logfile1})
-if [ $logrow1 -ge 300 ];then
-    cat /dev/null > ${logfile1}
-    echo "Log条数超限，清空处理！" >> ${logfile1}
-fi
 }
 
 while [ "$enable" = "1" ];
