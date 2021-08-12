@@ -4,6 +4,7 @@ START=80
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 logfile="/var/log/ddnspod.log"
+dnsconf="/usr/share/dnspod/dns.conf"
 
 uci_get_by_name() {
 	local ret=$(uci get dnspod.$1.$2 2>/dev/null)
@@ -17,16 +18,15 @@ start(){
 		icount=`ps -w | grep ddnspod.sh |grep -v grep| wc -l`
 		if [ $icount = 1 ] ;then
 			kill -9 $(ps | grep ddnspod.sh | grep -v "grep" | awk '{print $1}') >/dev/null 2>&1
-			cat /dev/null > /var/log/ddnspod.log
-			cat /dev/null > /var/log/ddnspod1.log
-			cat /dev/null > /usr/share/dnspod/dns.conf
+			cat /dev/null > ${logfile}
+			cat /dev/null > ${dnsconf}
 		fi
 		local login_email=$(uci get dnspod.@login_mode[0].login_email 2>/dev/null)
 		local login_password=$(uci get dnspod.@login_mode[0].login_password 2>/dev/null)
 		local artoken=$(uci get dnspod.@login_mode[0].artoken 2>/dev/null)
-		rm -f /usr/share/dnspod/dns.conf
+		rm -f ${dnsconf}
 
-		cat >>/usr/share/dnspod/dns.conf <<EOF
+		cat >>${dnsconf} <<EOF
 # For security reasons, it is recommended that you use token-based auth instead
 arMail="$login_email"
 arPass="$login_password"
@@ -43,17 +43,14 @@ EOF
 		local sub_domain=$(uci_get_by_name $arDdnsCheck sub_domain)
 		local record_type=$(uci_get_by_name $arDdnsCheck record_type)
 
-		cat >>/usr/share/dnspod/dns.conf <<EOF
+		cat >>${dnsconf} <<EOF
 arDdnsCheck "$main_domain" "$sub_domain" "$record_type"
 EOF
 
 	done
 		sleep 2
-		bash /usr/share/dnspod/ddnspod.sh >> /var/log/ddnspod1.log 2>&1 &
+		bash /usr/share/dnspod/ddnspod.sh >> ${logfile} 2>&1 &
 		echo "$(date "+%Y-%m-%d %H:%M:%S") >>>>>>>>正在运行:检查更新DNS记录间隔时间为${sleeptime}秒<<<<<<<<" >> ${logfile}
-
-		#nohup /usr/share/dnspod/ddnspod.sh > /var/log/ddnspod.log 2>&1 &
-
 	fi
 }
 
@@ -63,8 +60,8 @@ stop()
 	if [ $enable -ne 1 ]; then
 		kill -9 $(ps | grep ddnspod.sh | grep -v "grep" | awk '{print $1}') >/dev/null 2>&1
 		kill $(ps -w | grep ddnspod |grep -v grep) >/dev/null 2>&1
-		cat /dev/null > /var/log/ddnspod1.log
-		cat /dev/null > /usr/share/dnspod/dns.conf
-		cat /dev/null > /var/log/ddnspod.log && echo "$(date "+%Y-%m-%d %H:%M:%S") >>>>>>>>停止运行:DNS记录以保存<<<<<<<<" >> ${logfile}
+		cat /dev/null > ${logfile}
+		cat /dev/null > ${dnsconf}
+		echo "$(date "+%Y-%m-%d %H:%M:%S") >>>>>>>>停止运行:DNS记录以保存<<<<<<<<" >> ${logfile}
 	fi
 }
