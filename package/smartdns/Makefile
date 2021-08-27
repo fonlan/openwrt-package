@@ -1,58 +1,42 @@
 #
-# Copyright (C) 2018-2020 Ruilin Peng (Nick) <pymumu@gmail.com>.
+# Copyright (c) 2018-2020 Nick Peng (pymumu@gmail.com)
+# This is free software, licensed under the GNU General Public License v3.
 #
-# smartdns is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# smartdns is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=smartdns
+PKG_VERSION:=202108027
+PKG_RELEASE:=1
 
 PKG_SOURCE_PROTO:=git
-PKG_SOURCE_URL:=https://github.com/pymumu/smartdns.git
+PKG_SOURCE_URL:=https://www.github.com/pymumu/smartdns.git
+PKG_MIRROR_HASH:=skip
+PKG_SOURCE_VERSION:=f50e4dd0813da9300580f7188e44ed72a27ae79c
 
-PKG_REV:=f50e4dd0813da9300580f7188e44ed72a27ae79c
-PKG_VERSION:=2021.08.27
-PKG_RELEASE:=35
-PKG_LICENSE:=GPL-3.0
+PKG_MAINTAINER:=Nick Peng <pymumu@gmail.com>
+PKG_LICENSE:=GPL-3.0-or-later
+PKG_LICENSE_FILES:=LICENSE
 
-PKG_SOURCE_VERSION:=$(PKG_REV)
-PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
-PKG_SOURCE:=$(PKG_SOURCE_SUBDIR).tar.gz
-PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_SOURCE_SUBDIR)
+PKG_BUILD_PARALLEL:=1
 
 include $(INCLUDE_DIR)/package.mk
 
-MAKE_ARGS := CFLAGS="$(TARGET_CFLAGS)" CC=$(TARGET_CC)
+MAKE_VARS += VER=$(PKG_VERSION) 
+MAKE_PATH:=src
 
 define Package/smartdns
   SECTION:=net
   CATEGORY:=Network
   TITLE:=smartdns server
-  URL:=http://github.com/pymumu/smartdns/
-  MAINTAINER:=Nick Peng <pymumu@gmail.com>
-  DEPENDS:=+libopenssl
+  DEPENDS:=+libpthread +libopenssl
+  URL:=https://www.github.com/pymumu/smartdns/
 endef
 
 define Package/smartdns/description
-SmartDNS is a local DNS server. SmartDNS accepts DNS query requests from local clients, obtains DNS query results from multiple upstream DNS servers, and returns the fastest access results to clients.
-endef
-
-define Build/Configure
-	mkdir -p $(PKG_INSTALL_DIR)
-endef
-
-define Build/Compile
-	$(MAKE) -C $(PKG_BUILD_DIR)/src $(MAKE_ARGS) all
+SmartDNS is a local DNS server which accepts DNS query requests from local network clients,
+gets DNS query results from multiple upstream DNS servers concurrently, and returns the fastest IP to clients.
+Unlike dnsmasq's all-servers, smartdns returns the fastest IP. 
 endef
 
 define Package/smartdns/conffiles
