@@ -342,8 +342,6 @@ date
 . $DIR/dns.conf
 
 echo ""
-echo ""
-echo ""
 echo "+++++++++++++++++++++++++++"
 
 sleep ${sleeptime}
