@@ -10,3 +10,9 @@
 [submodule "package/luci-app-tcpdump"]
 	path = package/luci-app-tcpdump
 	url = https://github.com/fonlan/luci-app-tcpdump.git
+[submodule "package/openwrt-shadowsocks-rust"]
+	path = package/openwrt-shadowsocks-rust
+	url = https://github.com/honwen/openwrt-shadowsocks-rust.git
+[submodule "package/luci-app-shadowsocks-rust"]
+	path = package/luci-app-shadowsocks-rust
+	url = https://github.com/honwen/luci-app-shadowsocks-rust.git
