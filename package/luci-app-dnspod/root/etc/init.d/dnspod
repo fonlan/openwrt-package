@@ -5,6 +5,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 logfile="/var/log/ddnspod.log"
 dnsconf="/usr/share/dnspod/dns.conf"
+lastip="/usr/share/dnspod/last.ip"
 
 uci_get_by_name() {
 	local ret=$(uci get dnspod.$1.$2 2>/dev/null)
@@ -62,6 +63,7 @@ stop()
 		kill $(ps -w | grep ddnspod |grep -v grep) >/dev/null 2>&1
 		cat /dev/null > ${logfile}
 		cat /dev/null > ${dnsconf}
+		cat /dev/null > ${lastip}
 		echo "$(date "+%Y-%m-%d %H:%M:%S") >>>>>>>>停止运行:DNS记录以保存<<<<<<<<" >> ${logfile}
 	fi
 }
